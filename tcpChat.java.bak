@@ -1,0 +1,79 @@
+//package命名规则：priv.个人名.项目名.模块名.……
+import java.io.*;
+import java.net.*;
+
+class  tcpsend 
+{
+	public static void main(String[] args) throws Exception
+	{
+		InetAddress i = InetAddress.getLocalHost();
+		String add = i.getHostAddress();
+		System.out.println("ip:::  "+add);
+
+		Socket s = new Socket(add,10000);
+
+		BufferedReader bufr = 
+			new BufferedReader(new InputStreamReader(System.in));
+
+		BufferedWriter bufw = 
+			new BufferedWriter(new OutputStreamWriter(s.getOutputStream()));
+
+		BufferedReader buf = 
+			new BufferedReader(new InputStreamReader(s.getInputStream()));
+
+
+		String line = null;
+		while((line = bufr.readLine())!=null)
+		{
+			if("over".equals(line))
+				break;
+			bufw.write(line);
+			bufw.newLine();
+			bufw.flush();
+
+			String str = buf.readLine();
+			System.out.println("server:::  "+str);
+		}
+
+		bufr.close();
+		s.close();
+	}
+}
+
+class  tcprece 
+{
+	public static void main(String[] args) throws Exception
+	{
+		ServerSocket ss = new ServerSocket(10000);
+
+		Socket s = ss.accept();
+		String add = s.getInetAddress().getHostAddress();
+		System.out.println("ip:::  "+add);
+
+		BufferedReader bufr = 
+			new BufferedReader(new InputStreamReader(s.getInputStream()));
+
+		BufferedWriter bufw = 
+			new BufferedWriter(new OutputStreamWriter(s.getOutputStream()));
+
+		BufferedReader buf = 
+			new BufferedReader(new InputStreamReader(System.in));
+
+		String line = null;
+		while((line = bufr.readLine())!=null)
+		{	
+			System.out.println("client:::  "+line);
+			//bufw.write(line.toUpperCase());
+
+			String zc = buf.readLine();
+			
+			bufw.write(zc);
+		
+			bufw.newLine();
+			bufw.flush();
+		
+		}
+		s.close();
+		ss.close();
+	}
+}
